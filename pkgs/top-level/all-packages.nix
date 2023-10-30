@@ -24659,6 +24659,17 @@ with pkgs;
   vtk = vtk_9;
   vtkWithQt5 = vtk_9_withQt5;
 
+  vtk_9_withQt6 = qt6Packages.callPackage ../development/libraries/vtk/9.x-qt6.nix {
+    enableQt = true;
+    inherit (darwin) libobjc;
+    inherit (darwin.apple_sdk.libs) xpc;
+    inherit (darwin.apple_sdk.frameworks) AGL Cocoa CoreServices DiskArbitration
+                                          IOKit CFNetwork Security ApplicationServices
+                                          CoreText IOSurface ImageIO OpenGL GLUT;
+  };
+
+  vtkWithQt6 = vtk_9_withQt6;
+
   vulkan-caps-viewer = libsForQt5.callPackage ../tools/graphics/vulkan-caps-viewer { };
 
   vulkan-cts = callPackage ../tools/graphics/vulkan-cts { };
