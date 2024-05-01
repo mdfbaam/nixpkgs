@@ -1,6 +1,7 @@
 { majorVersion, minorVersion, sourceSha256, patchesToFetch ? [] }:
 { stdenv, lib, fetchurl, cmake, libGLU, libGL, libX11, xorgproto, libXt, libpng, libtiff
 , fetchpatch
+, enableOpenCascade ? false, opencascade-occt
 , enableQt ? false, qtbase, qttools, qtdeclarative
 , enablePython ? false, python ? throw "vtk: Python support requested, but no python interpreter was given."
 # Darwin support
@@ -14,7 +15,7 @@ let
   pythonMajor = lib.substring 0 1 python.pythonVersion;
 
 in stdenv.mkDerivation rec {
-  pname = "vtk${optionalString enableQt "-q6vtk"}";
+  pname = "vtk${optionalString enableQt "-qt6"}${optionalString enableOpenCascade "-ioocct"}";
   version = "${majorVersion}.${minorVersion}";
 
   src = fetchurl {
@@ -25,7 +26,9 @@ in stdenv.mkDerivation rec {
   nativeBuildInputs = [ cmake ];
 
   buildInputs = [ libpng libtiff ]
-    ++ optionals enableQt [
+    ++ optionals enableOpenCascade [
+       opencascade-occt
+    ] ++ optionals enableQt [
        qtbase
        qttools
     ] ++ optionals stdenv.isLinux [
@@ -76,6 +79,8 @@ in stdenv.mkDerivation rec {
     "-DCMAKE_INSTALL_INCLUDEDIR=include"
     "-DCMAKE_INSTALL_BINDIR=bin"
     "-DVTK_VERSIONED_INSTALL=OFF"
+  ] ++ optionals enableOpenCascade [
+    "-DVTK_MODULE_ENABLE_VTK_IOOCCT=YES"
   ] ++ optionals enableQt [
     "-DVTK_GROUP_ENABLE_Qt:STRING=YES"
     "-DVTK_QT_VERSION=6"
