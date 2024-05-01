@@ -24668,7 +24668,18 @@ with pkgs;
                                           CoreText IOSurface ImageIO OpenGL GLUT;
   };
 
+  vtk_9_withQt6IOOCCT = qt6Packages.callPackage ../development/libraries/vtk/9.x-qt6.nix {
+    enableQt = true;
+    enableOpenCascade = true;
+    inherit (darwin) libobjc;
+    inherit (darwin.apple_sdk.libs) xpc;
+    inherit (darwin.apple_sdk.frameworks) AGL Cocoa CoreServices DiskArbitration
+                                          IOKit CFNetwork Security ApplicationServices
+                                          CoreText IOSurface ImageIO OpenGL GLUT;
+  };
+
   vtkWithQt6 = vtk_9_withQt6;
+  vtkWithQt6IOOCCT = vtk_9_withQt6IOOCCT;
 
   vulkan-caps-viewer = libsForQt5.callPackage ../tools/graphics/vulkan-caps-viewer { };
 
