@@ -1,9 +1,8 @@
-{ lib
-, stdenv
-, fetchFromGitHub
-, cmake
-, openssl
-, c-ares
+{
+  lib, stdenv, fetchFromGitHub,
+  cmake,
+  openssl, c-ares,
+  enableNetworking ? !stdenv.targetPlatform.isMinGW
 }:
 
 stdenv.mkDerivation rec {
@@ -17,10 +16,13 @@ stdenv.mkDerivation rec {
     sha256 = "sha256-TZ6EOS7Oo7ICXbx+ceQ6ZX18bPPWNwHyGJuALsUzb4s=";
   };
 
-  nativeBuildInputs = [
-    cmake
+  buildInputs = [
     openssl
     c-ares
+  ];
+
+  nativeBuildInputs = [
+    cmake
   ];
 
   cmakeFlags = [
@@ -28,6 +30,9 @@ stdenv.mkDerivation rec {
     "-DLIBCORO_BUILD_SHARED_LIBS=ON"
     "-DLIBCORO_BUILD_EXAMPLES=OFF"
     "-DLIBCORO_BUILD_TESTS=OFF"
+  ] ++ lib.optional (!enableNetworking) [
+    "-DLIBCORO_FEATURE_NETWORKING=OFF"
+    "-DLIBCORO_FEATURE_TLS=OFF"
   ];
 
   meta = {
@@ -40,6 +45,6 @@ stdenv.mkDerivation rec {
     homepage = "https://github.com/jbaldwin/libcoro";
     license = lib.licenses.asl20;
     maintainers = [ lib.maintainers.cadkin ];
-    platforms = lib.platforms.linux;
+    platforms = lib.platforms.all;
   };
 }
