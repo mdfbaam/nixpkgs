@@ -62,7 +62,7 @@ stdenv.mkDerivation rec {
   outputs = [ "out" "dev" "bin" ];
 
   nativeBuildInputs = [ removeReferencesTo cmake ]
-    ++ optional fortranSupport fortran;
+    ++ lib.optional fortranSupport fortran;
 
   buildInputs = optional fortranSupport fortran
     ++ optional szipSupport szip
@@ -83,6 +83,7 @@ stdenv.mkDerivation rec {
     ++ lib.optional javaSupport "-DHDF5_BUILD_JAVA=ON"
     ++ lib.optional usev110Api "-DDEFAULT_API_VERSION=v110"
     ++ lib.optionals threadsafe [ "-DDHDF5_ENABLE_THREADSAFE:BOOL=ON" "-DHDF5_BUILD_HL_LIB=OFF" ]
+    ++ lib.optional stdenv.targetPlatform.isMinGW [ "-DCMAKE_CROSSCOMPILING_EMULATOR=dummy" ]
   ;
 
   postInstall = ''
@@ -128,6 +129,6 @@ stdenv.mkDerivation rec {
     license = licenses.bsd3; # Lawrence Berkeley National Labs BSD 3-Clause variant
     maintainers = [ maintainers.markuskowa ];
     homepage = "https://www.hdfgroup.org/HDF5/";
-    platforms = platforms.unix;
+    platforms = platforms.all;
   };
 }
