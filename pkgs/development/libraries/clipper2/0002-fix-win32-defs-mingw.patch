@@ -1,0 +1,26 @@
+diff --git a/Utils/ClipFileLoad.h b/Utils/ClipFileLoad.h
+index 081f7c0..e315362 100644
+--- a/Utils/ClipFileLoad.h
++++ b/Utils/ClipFileLoad.h
+@@ -8,7 +8,7 @@
+ #include <fstream>
+ #include <string>
+ #include "clipper2/clipper.h"
+-#ifndef _WIN32
++#if !defined(_WIN32) || defined(__MINGW32__)
+ #include <sys/types.h>
+ #include <sys/stat.h>
+ #include <unistd.h>
+diff --git a/Utils/clipper.svg.utils.h b/Utils/clipper.svg.utils.h
+index 6d94ab4..d8790e0 100644
+--- a/Utils/clipper.svg.utils.h
++++ b/Utils/clipper.svg.utils.h
+@@ -13,7 +13,7 @@
+ #include <string>
+ #include "clipper2/clipper.h"
+ #include "clipper.svg.h"
+-#ifndef _WIN32
++#if !defined(_WIN32) || defined(__MINGW32__)
+ #include <sys/types.h>
+ #include <sys/stat.h>
+ #include <unistd.h>
