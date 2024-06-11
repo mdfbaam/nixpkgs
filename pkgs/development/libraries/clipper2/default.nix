@@ -29,6 +29,7 @@ stdenv.mkDerivation rec {
 
   patches = [
     ./0001-fix-pc-paths.patch
+    ./0002-fix-win32-defs-mingw.patch
   ];
 
   meta = {
@@ -40,6 +41,6 @@ stdenv.mkDerivation rec {
     homepage = "https://github.com/AngusJohnson/Clipper2";
     license = lib.licenses.boost;
     maintainers = [ lib.maintainers.cadkin ];
-    platforms = lib.platforms.linux;
+    platforms = lib.platforms.all;
   };
 }
