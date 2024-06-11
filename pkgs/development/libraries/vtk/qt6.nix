@@ -1,8 +1,10 @@
 { majorVersion, minorVersion, sourceSha256, patchesToFetch ? [] }:
-{ stdenv, lib, fetchurl, cmake, libGLU, libGL, libX11, xorgproto, libXt, libpng, libtiff
+#{ stdenv, lib, fetchurl, cmake, libGLU, libGL, libX11, xorgproto, libXt, libpng, libtiff
+{ stdenv, lib, fetchurl, cmake, libpng, libtiff
 , fetchpatch
+, vtk_9_compile_tools
 , enableOpenCascade ? false, opencascade-occt
-, enableQt ? false, qtbase, qttools, qtdeclarative
+, enableQt ? false, qtbase, qtdeclarative
 , enablePython ? false, python ? throw "vtk: Python support requested, but no python interpreter was given."
 # Darwin support
 , AGL, Cocoa, CoreServices, DiskArbitration, IOKit, CFNetwork, Security, GLUT, OpenGL
@@ -23,19 +25,19 @@ in stdenv.mkDerivation rec {
     sha256 = sourceSha256;
   };
 
-  nativeBuildInputs = [ cmake ];
+  nativeBuildInputs = [ cmake vtk_9_compile_tools ];
 
   buildInputs = [ libpng libtiff ]
     ++ optionals enableOpenCascade [
        opencascade-occt
     ] ++ optionals enableQt [
        qtbase
-       qttools
+       qtdeclarative
     ] ++ optionals stdenv.isLinux [
-      libGLU
-      libGL
-      xorgproto
-      libXt
+       # libGLU
+       # libGL
+       # xorgproto
+       # libXt
     ] ++ optionals stdenv.isDarwin [
       xpc
       AGL
@@ -54,8 +56,8 @@ in stdenv.mkDerivation rec {
     ] ++ optionals enablePython [
       python
     ];
-  propagatedBuildInputs = optionals stdenv.isDarwin [ libobjc ]
-    ++ optionals stdenv.isLinux [ libX11 libGL ];
+  propagatedBuildInputs = optionals stdenv.isDarwin [ libobjc ];
+    #++ optionals stdenv.isLinux [ libX11 libGL ];
     # see https://github.com/NixOS/nixpkgs/pull/178367#issuecomment-1238827254
 
   patches = map fetchpatch patchesToFetch;
@@ -72,8 +74,9 @@ in stdenv.mkDerivation rec {
     "-DCMAKE_CXX_FLAGS=-fPIC"
     "-DVTK_MODULE_USE_EXTERNAL_vtkpng=ON"
     "-DVTK_MODULE_USE_EXTERNAL_vtktiff=1"
+    "-DVTK_MODULE_ENABLE_vtkhdf5=NO"
   ] ++ lib.optionals (!stdenv.isDarwin) [
-    "-DOPENGL_INCLUDE_DIR=${libGL.dev}/include"
+    #"-DOPENGL_INCLUDE_DIR=${libGL.dev}/include"
   ] ++ [
     "-DCMAKE_INSTALL_LIBDIR=lib"
     "-DCMAKE_INSTALL_INCLUDEDIR=include"
@@ -83,6 +86,7 @@ in stdenv.mkDerivation rec {
     "-DVTK_MODULE_ENABLE_VTK_IOOCCT=YES"
   ] ++ optionals enableQt [
     "-DVTK_GROUP_ENABLE_Qt:STRING=YES"
+    "-DVTK_MODULE_ENABLE_VTK_GUISupportQtQuick:STRING=NO"
     "-DVTK_QT_VERSION=6"
   ] ++ optionals stdenv.isDarwin [ "-DOPENGL_INCLUDE_DIR=${OpenGL}/Library/Frameworks" ]
     ++ optionals enablePython [
@@ -108,6 +112,6 @@ in stdenv.mkDerivation rec {
     homepage = "https://www.vtk.org/";
     license = licenses.bsd3;
     maintainers = with maintainers; [ knedlsepp tfmoraes lheckemann ];
-    platforms = with platforms; unix;
+    #platforms = with platforms; unix;
   };
 }

@@ -24980,6 +24980,8 @@ with pkgs;
   vtk = vtk_9;
   vtkWithQt5 = vtk_9_withQt5;
 
+  vtk_9_compile_tools = callPackage ../development/libraries/vtk/9.x-compile-tools.nix { };
+
   vtk_9_withQt6 = qt6Packages.callPackage ../development/libraries/vtk/9.x-qt6.nix {
     enableQt = true;
     inherit (darwin) libobjc;
