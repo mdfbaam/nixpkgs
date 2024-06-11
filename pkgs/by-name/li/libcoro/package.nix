@@ -16,6 +16,10 @@ stdenv.mkDerivation rec {
     sha256 = "sha256-TZ6EOS7Oo7ICXbx+ceQ6ZX18bPPWNwHyGJuALsUzb4s=";
   };
 
+  patches = [
+    ./0001-fix-libcoro-prefix.patch
+  ];
+
   buildInputs = [
     openssl
     c-ares
