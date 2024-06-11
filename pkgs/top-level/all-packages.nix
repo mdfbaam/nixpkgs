@@ -24646,40 +24646,15 @@ with pkgs;
     gtkVersion = "4";
   };
 
-  vtk_9 = libsForQt5.callPackage ../development/libraries/vtk/9.x.nix {
-    inherit (darwin) libobjc;
-    inherit (darwin.apple_sdk.libs) xpc;
-    inherit (darwin.apple_sdk.frameworks) AGL Cocoa CoreServices DiskArbitration
-                                          IOKit CFNetwork Security ApplicationServices
-                                          CoreText IOSurface ImageIO OpenGL GLUT;
+  vtk = qt6Packages.callPackage ../development/libraries/vtk {
+    # NOP
   };
 
-  vtk_9_withQt5 = vtk_9.override { enableQt = true; };
+  vtk-compile-tools = callPackage ../development/libraries/vtk/compile-tools.nix { };
 
-  vtk = vtk_9;
-  vtkWithQt5 = vtk_9_withQt5;
-
-  vtk_9_withQt6 = qt6Packages.callPackage ../development/libraries/vtk/9.x-qt6.nix {
+  vtk-qt = qt6Packages.callPackage ../development/libraries/vtk {
     enableQt = true;
-    inherit (darwin) libobjc;
-    inherit (darwin.apple_sdk.libs) xpc;
-    inherit (darwin.apple_sdk.frameworks) AGL Cocoa CoreServices DiskArbitration
-                                          IOKit CFNetwork Security ApplicationServices
-                                          CoreText IOSurface ImageIO OpenGL GLUT;
   };
-
-  vtk_9_withQt6IOOCCT = qt6Packages.callPackage ../development/libraries/vtk/9.x-qt6.nix {
-    enableQt = true;
-    enableOpenCascade = true;
-    inherit (darwin) libobjc;
-    inherit (darwin.apple_sdk.libs) xpc;
-    inherit (darwin.apple_sdk.frameworks) AGL Cocoa CoreServices DiskArbitration
-                                          IOKit CFNetwork Security ApplicationServices
-                                          CoreText IOSurface ImageIO OpenGL GLUT;
-  };
-
-  vtkWithQt6 = vtk_9_withQt6;
-  vtkWithQt6IOOCCT = vtk_9_withQt6IOOCCT;
 
   vulkan-caps-viewer = libsForQt5.callPackage ../tools/graphics/vulkan-caps-viewer { };
 
