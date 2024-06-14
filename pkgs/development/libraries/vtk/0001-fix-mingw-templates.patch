@@ -1,0 +1,14 @@
+diff --git a/Common/Core/vtkCompiler.h b/Common/Core/vtkCompiler.h
+index 238551c7..06617c20 100644
+--- a/Common/Core/vtkCompiler.h
++++ b/Common/Core/vtkCompiler.h
+@@ -35,7 +35,9 @@
+ #endif
+ 
+ /** extern template declarations for C++11. */
++#if !defined(__MINGW32__)
+ #define VTK_USE_EXTERN_TEMPLATE
++#endif
+ 
+ //----------------------------------------------------------------------------
+ // Provide a VTK_ALWAYS_EXPORT macro.
