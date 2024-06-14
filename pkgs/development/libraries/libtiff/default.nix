@@ -60,9 +60,7 @@ stdenv.mkDerivation (finalAttrs: {
   # sure cross-compilation works first!
   nativeBuildInputs = [ autoreconfHook pkg-config sphinx ];
 
-  buildInputs = [
-    lerc
-  ];
+  buildInputs = lib.optional (!stdenv.targetPlatform.isWindows) lerc;
 
   # TODO: opengl support (bogus configure detection)
   propagatedBuildInputs = [
