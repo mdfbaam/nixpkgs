@@ -24,9 +24,12 @@ stdenv.mkDerivation rec {
     sqlite
   ];
 
-  buildInputs = [
+  propagatedBuildInputs = [
     libpng
     libtiff
+  ];
+
+  buildInputs = [
     hdf5
   ] ++ lib.optionals enableOpenCascade [
     opencascade-occt
