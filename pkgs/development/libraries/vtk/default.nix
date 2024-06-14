@@ -18,6 +18,10 @@ stdenv.mkDerivation rec {
     sha256 = "sha256-wZHSW0DXx5uRYy6sPYc6t5b7rsLEDVYGM8f3rsEayfI=";
   };
 
+  patches = [
+    ./0001-fix-mingw-templates.patch
+  ];
+
   nativeBuildInputs = [
     cmake
     vtk-compile-tools
