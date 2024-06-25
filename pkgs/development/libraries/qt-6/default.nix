@@ -191,6 +191,16 @@ let
           } ./hooks/wrap-qt-apps-hook.sh)
         { };
 
+      deployQtWinPluginsHook = callPackage
+        ({ qtbase }: makeSetupHook
+          {
+            name = "deploy-qt6-win-plugins-hook";
+            substitutions = {
+              qtPluginPath = "${qtbase + "/" + qtbase.qtPluginPrefix}";
+            };
+          } ./hooks/deploy-qt-win-plugins-hook.sh)
+        { };
+
       qmake = callPackage
         ({ qtbase }: makeSetupHook
           {
