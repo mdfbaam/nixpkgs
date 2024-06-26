@@ -9,7 +9,6 @@
 stdenv.mkDerivation rec {
   pname = "assimp";
   version = "5.4.1";
-  outputs = [ "out" "lib" "dev" ];
 
   src = fetchFromGitHub {
     owner = "assimp";
@@ -34,6 +33,6 @@ stdenv.mkDerivation rec {
     homepage = "https://www.assimp.org/";
     license = licenses.bsd3;
     maintainers = with maintainers; [ ehmry ];
-    platforms = platforms.linux ++ platforms.darwin;
+    platforms = platforms.all;
   };
 }
