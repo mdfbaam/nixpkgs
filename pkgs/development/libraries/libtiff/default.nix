@@ -64,7 +64,7 @@ stdenv.mkDerivation (finalAttrs: {
 
   buildInputs = [
     zstd
-  ] lib.optionals (!stdenv.targetPlatform.isWindows) [
+  ] ++ lib.optionals (!stdenv.targetPlatform.isWindows) [
     lerc
   ];
 
