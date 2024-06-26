@@ -73,8 +73,9 @@ stdenv.mkDerivation (finalAttrs: {
   nativeBuildInputs = [ autoreconfHook pkg-config sphinx ];
 
   buildInputs = [
-    lerc
     zstd
+  ] lib.optionals (!stdenv.targetPlatform.isWindows) [
+    lerc
   ];
 
   # TODO: opengl support (bogus configure detection)
