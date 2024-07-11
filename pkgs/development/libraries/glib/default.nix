@@ -236,7 +236,7 @@ stdenv.mkDerivation (finalAttrs: {
   '';
 
   preFixup = lib.optionalString (!stdenv.hostPlatform.isStatic) ''
-    buildPythonPath ${python3Packages.packaging}
+    buildPythonPath ${buildPackages.python3Packages.packaging}
     patchPythonScript "$dev/share/glib-2.0/codegen/utils.py"
   '';
 
