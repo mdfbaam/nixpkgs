@@ -26,8 +26,8 @@ stdenv.mkDerivation {
   nativeCheckInputs = [ perl glibcLocales ];
   outputs = [ "out" "info" ]; # the man pages are rather small
 
-  nativeBuildInputs = [ updateAutotoolsGnuConfigScriptsHook ];
-  buildInputs = [ pcre2 libiconv runtimeShellPackage ];
+  nativeBuildInputs = [ ] ++ lib.optionals (!stdenv.hostPlatform.isMinGW) [ updateAutotoolsGnuConfigScriptsHook ];
+  buildInputs = [ pcre2 libiconv ] ++ lib.optionals (!stdenv.hostPlatform.isMinGW) [ runtimeShellPackage ];
 
   # cygwin: FAIL: multibyte-white-space
   # freebsd: FAIL mb-non-UTF8-performance
