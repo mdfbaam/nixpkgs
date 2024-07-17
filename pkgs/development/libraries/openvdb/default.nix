@@ -29,6 +29,8 @@ stdenv.mkDerivation rec
     substituteInPlace $dev/lib/cmake/OpenVDB/FindOpenVDB.cmake \
       --replace \''${OPENVDB_LIBRARYDIR} $out/lib \
       --replace \''${OPENVDB_INCLUDEDIR} $dev/include
+
+    cp ${./openvdb-config.cmake} $dev/lib/cmake/OpenVDB/openvdb-config.cmake
   '';
 
   meta = with lib; {
@@ -36,7 +38,7 @@ stdenv.mkDerivation rec
     mainProgram = "vdb_print";
     homepage = "https://www.openvdb.org";
     maintainers = [ maintainers.guibou ];
-    platforms = platforms.unix;
+    platforms = platforms.all;
     license = licenses.mpl20;
   };
 }
