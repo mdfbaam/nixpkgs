@@ -3,6 +3,8 @@
 , fetchFromGitHub
 , fetchpatch
 , cmake
+
+, windows
 }:
 
 stdenv.mkDerivation rec {
@@ -18,6 +20,11 @@ stdenv.mkDerivation rec {
     hash = "sha256-zGZHMtAUVzBKFbCshpepm3ce3tW6wQ+F30kYYXAQ/TE=";
   };
 
+  buildInputs = lib.optionals stdenv.hostPlatform.isMinGW [
+    windows.mingw_w64_pthreads
+    windows.dlfcn
+  ];
+
   nativeBuildInputs = [
     cmake
   ];
@@ -28,6 +35,8 @@ stdenv.mkDerivation rec {
       url = "https://patch-diff.githubusercontent.com/raw/oneapi-src/oneTBB/pull/899.patch";
       hash = "sha256-kU6RRX+sde0NrQMKlNtW3jXav6J4QiVIUmD50asmBPU=";
     })
+  ] ++ lib.optionals stdenv.hostPlatform.isMinGW [
+    ./001-mingw-link-flag.patch
   ];
 
   # Fix build with modern gcc
@@ -35,12 +44,18 @@ stdenv.mkDerivation rec {
   NIX_CFLAGS_COMPILE = lib.optionals stdenv.cc.isGNU [ "-Wno-error=array-bounds" "-Wno-error=stringop-overflow" ] ++
     # error: variable 'val' set but not used
     lib.optionals stdenv.cc.isClang [ "-Wno-error=unused-but-set-variable" ] ++
+    # error: value computed is not used
+    lib.optionals stdenv.hostPlatform.isMinGW [ "-Wno-error=unused-value" "-Wno-error=shadow" ] ++
     # Workaround for gcc-12 ICE when using -O3
     # https://gcc.gnu.org/PR108854
     lib.optionals (stdenv.cc.isGNU && stdenv.hostPlatform.isx86_32) [ "-O2" ];
 
   # Fix undefined reference errors with version script under LLVM.
   NIX_LDFLAGS = lib.optionalString (stdenv.cc.bintools.isLLVM && lib.versionAtLeast stdenv.cc.bintools.version "17") "--undefined-version";
+
+  cmakeFlags = lib.optionals stdenv.hostPlatform.isMinGW [
+    "-DTBB_TEST=OFF"
+  ];
 
   # Disable failing test on musl
   # test/conformance/conformance_resumable_tasks.cpp:37:24: error: ‘suspend’ is not a member of ‘tbb::v1::task’; did you mean ‘tbb::detail::r1::suspend’?
@@ -61,7 +76,7 @@ stdenv.mkDerivation rec {
       represents a higher-level, task-based parallelism that abstracts platform
       details and threading mechanisms for scalability and performance.
     '';
-    platforms = platforms.unix;
+    platforms = platforms.all;
     maintainers = with maintainers; [ thoughtpolice tmarkus ];
   };
 }
