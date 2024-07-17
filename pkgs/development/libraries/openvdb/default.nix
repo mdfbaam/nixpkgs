@@ -1,4 +1,4 @@
-{ lib, stdenv, fetchFromGitHub, cmake, boost, jemalloc, c-blosc, tbb, zlib }:
+{ lib, stdenv, fetchFromGitHub, cmake, boost, jemalloc, c-blosc, tbb, zlib, bzip2, lzma, zstd}:
 
 stdenv.mkDerivation rec
 {
@@ -16,14 +16,29 @@ stdenv.mkDerivation rec
 
   nativeBuildInputs = [ cmake ];
 
-  buildInputs = [ boost tbb jemalloc c-blosc zlib ];
+  buildInputs = [ boost tbb jemalloc c-blosc zlib ] ++ lib.optionals stdenv.hostPlatform.isMinGW [
+    bzip2
+    lzma
+    zstd
+  ];
 
-  cmakeFlags = [ "-DOPENVDB_CORE_STATIC=OFF" "-DOPENVDB_BUILD_NANOVDB=ON"];
+  cmakeFlags = [
+    "-DOPENVDB_BUILD_NANOVDB=ON"
+  ] ++ lib.optionals stdenv.hostPlatform.isMinGW [
+    "-DOPENVDB_CORE_STATIC=ON"
+    "-DOPENVDB_CORE_SHARED=OFF"
+    "-DBoost_USE_STATIC_LIBS=ON"
+  ] ++ lib.optionals stdenv.hostPlatform.isUnix [
+    "-DOPENVDB_CORE_STATIC=OFF"
+    "-DOPENVDB_CORE_SHARED=ON"
+  ];
 
   # error: aligned deallocation function of type 'void (void *, std::align_val_t) noexcept' is only available on macOS 10.13 or newer
-  env = lib.optionalAttrs (stdenv.hostPlatform.isDarwin && lib.versionOlder stdenv.hostPlatform.darwinMinVersion "10.13" && lib.versionAtLeast tbb.version "2021.8.0") {
-    NIX_CFLAGS_COMPILE = "-faligned-allocation";
-  };
+  NIX_CFLAGS_COMPILE = lib.optionals (stdenv.isDarwin && lib.versionOlder stdenv.hostPlatform.darwinMinVersion "10.13" && lib.versionAtLeast tbb.version "2021.8.0") [
+    "-faligned-allocation"
+  ] ++ lib.optionals stdenv.hostPlatform.isMinGW [
+    "-Wa,-mbig-obj"
+  ];
 
   postFixup = ''
     substituteInPlace $dev/lib/cmake/OpenVDB/FindOpenVDB.cmake \

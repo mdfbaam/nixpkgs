@@ -22456,7 +22456,9 @@ with pkgs;
   watcherclient = with python311Packages; toPythonApplication python-watcherclient;
   zunclient = with python311Packages; toPythonApplication python-zunclient;
 
-  openvdb = callPackage ../development/libraries/openvdb { };
+  openvdb = callPackage ../development/libraries/openvdb {
+    tbb = tbb_2021_11;
+  };
 
   openvr = callPackage ../by-name/op/openvr/package.nix {
     inherit (darwin.apple_sdk.frameworks) Foundation AppKit;
