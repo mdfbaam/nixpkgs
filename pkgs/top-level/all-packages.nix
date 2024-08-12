@@ -24656,6 +24656,10 @@ with pkgs;
     enableQt = true;
   };
 
+  vtk-qt5 = qt5.callPackage ../development/libraries/vtk {
+    enableQt = true;
+  };
+
   vulkan-caps-viewer = libsForQt5.callPackage ../tools/graphics/vulkan-caps-viewer { };
 
   vulkan-cts = callPackage ../tools/graphics/vulkan-cts { };

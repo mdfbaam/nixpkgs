@@ -7,7 +7,7 @@
 }:
 
 stdenv.mkDerivation rec {
-  pname = "vtk${lib.optionalString enableQt "-qt"}${lib.optionalString enableOpenCascade "-ioocct"}";
+  pname = "vtk${lib.optionalString enableQt "-qt"}${lib.versions.major qtbase.version}${lib.optionalString enableOpenCascade "-ioocct"}";
   version = "9.3.0";
 
   src = fetchFromGitLab {
@@ -65,7 +65,7 @@ stdenv.mkDerivation rec {
     "-DVTK_REQUIRE_LARGE_FILE_SUPPORT_EXITCODE=0"
   ] ++ lib.optionals enableQt [
     "-DVTK_GROUP_ENABLE_Qt:STRING=YES"
-    "-DVTK_QT_VERSION=6"
+    "-DVTK_QT_VERSION=${lib.versions.major qtbase.version}"
     "-DVTK_MODULE_ENABLE_VTK_GUISupportQtQuick:STRING=NO"
   ] ++ lib.optionals enableOpenCascade [
     "-DVTK_MODULE_ENABLE_VTK_IOOCCT=YES"
