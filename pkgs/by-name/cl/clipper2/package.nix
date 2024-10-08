@@ -29,6 +29,7 @@ stdenv.mkDerivation rec {
 
   patches = [
     ./0001-fix-pc-paths.patch
+    ./0002-fix-win32-defs-mingw.patch
   ];
 
   meta = {
